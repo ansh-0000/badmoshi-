@@ -1,0 +1,36 @@
+
+> travel-crew@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.10 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://169.254.247.114:3000
+✓ Ready in 883ms
+
+○ Compiling / ...
+ GET / 200 in 5.8s (next.js: 5.0s, application-code: 706ms)
+ GET /tour1.jpg 404 in 826ms (next.js: 516ms, application-code: 310ms)
+ GET /tour2.jpg 404 in 934ms (next.js: 570ms, application-code: 364ms)
+ GET /tour3.jpg 404 in 941ms (next.js: 632ms, application-code: 309ms)
+ GET /hero2.jpg 404 in 1059ms (next.js: 707ms, application-code: 352ms)
+ GET /hero1.jpg 404 in 1064ms (next.js: 580ms, application-code: 484ms)
+ GET /hero3.jpg 404 in 1059ms (next.js: 540ms, application-code: 518ms)
+ GET /video-poster.jpg 404 in 220ms (next.js: 39ms, application-code: 180ms)
+ GET /tour4.jpg 404 in 222ms (next.js: 63ms, application-code: 159ms)
+ GET /cta1.jpg 404 in 230ms (next.js: 113ms, application-code: 117ms)
+ GET /cta2.jpg 404 in 232ms (next.js: 135ms, application-code: 97ms)
+ GET / 200 in 96ms (next.js: 33ms, application-code: 62ms)
+ GET / 200 in 67ms (next.js: 17ms, application-code: 51ms)
+ GET / 200 in 47ms (next.js: 22ms, application-code: 25ms)
+ GET / 200 in 45ms (next.js: 18ms, application-code: 27ms)
+ GET /gallery1.jpg 404 in 577ms (next.js: 48ms, application-code: 529ms)
+ GET /gallery2.jpg 404 in 582ms (next.js: 83ms, application-code: 500ms)
+ GET /gallery3.jpg 404 in 591ms (next.js: 125ms, application-code: 466ms)
+ GET /gallery4.jpg 404 in 593ms (next.js: 171ms, application-code: 422ms)
+ GET /gallery5.jpg 404 in 617ms (next.js: 296ms, application-code: 322ms)
+ GET /gallery6.jpg 404 in 602ms (next.js: 325ms, application-code: 276ms)
+ GET /avatar1.jpg 404 in 215ms (next.js: 34ms, application-code: 181ms)
+ GET /avatar2.jpg 404 in 224ms (next.js: 83ms, application-code: 141ms)
+ GET /avatar3.jpg 404 in 226ms (next.js: 129ms, application-code: 97ms)
+ GET / 200 in 39ms (next.js: 19ms, application-code: 21ms)
+ GET / 200 in 31ms (next.js: 16ms, application-code: 15ms)
