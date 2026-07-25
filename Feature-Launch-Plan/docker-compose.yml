@@ -1,0 +1,47 @@
+services:
+  # ---- Data Layer (private network only) ----
+  db:
+    image: postgis/postgis:15-3.4
+    container_name: steady_nest_db
+    environment:
+      POSTGRES_USER: steady_user
+      POSTGRES_PASSWORD: steady_password
+      POSTGRES_DB: steady_nest
+    ports:
+      - "5432:5432"            # Exposed for local dev only; in prod, remove this
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - steady-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U steady_user -d steady_nest"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: steady_nest_redis
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"            # Exposed for local dev only; in prod, remove this
+    volumes:
+      - redis_data:/data
+    networks:
+      - steady-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+
+networks:
+  steady-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

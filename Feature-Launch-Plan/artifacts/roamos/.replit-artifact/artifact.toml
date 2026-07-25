@@ -1,0 +1,23 @@
+kind = "mobile"
+previewPath = "/"
+title = "ROAM•OS + StayNest"
+version = "1.0.0"
+id = "artifacts/roamos"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/" ]
+localPort = 23917
+
+[services.development]
+run = "pnpm --filter @workspace/roamos run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/roamos", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/roamos", "run", "serve" ]
+
+[services.env]
+PORT = "23917"
+BASE_PATH = "/"

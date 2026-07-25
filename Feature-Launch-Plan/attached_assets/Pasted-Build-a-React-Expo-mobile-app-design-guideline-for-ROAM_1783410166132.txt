@@ -1,0 +1,15 @@
+Build a React Expo mobile app design guideline for "ROAM•OS + StayNest" - a hybrid app combining a premium travel companion for nomads exploring India WITH short-term stay booking/autopay + community group chat features. original_problem_statement: [Very long prompt condensed]: Building a premium, hyper-futuristic digital companion for tech-forward travelers exploring India. Also merged with a marketplace for tenants/landlords with autopay for short-term stays. Key features: Arrival Brief dashboard (compass hero + First-24-Hours arrival checklist), Nearby Now map (radar + glass pins + radius filter), Eat & Drink discovery (day/night toggle, place cards), Stays booking hub (gallery, remote-work score, AUTOPAY SETUP with landlord), Say It Right translator (flip cards, AI), Passport profile (digital passport, exploration ledger), Community Chat (location-based group chat rooms where travelers/tenants join and talk), Settings (theme, radius, autopay management). MUST cut generic dark SaaS look — go warm editorial. user_choices: "Visual direction: Warm editorial. User explicitly stated color tokens: Ink #0B0E13 (warm charcoal, not pure black), Parchment #F4EFE6 (primary text on dark), Marigold #E2A73E (primary accent — warmth, not generic SaaS blue), Vermillion #C1440E (secondary accent / alerts), Jade #3E7C6B (verified / safe / open states), Glass rgba(244,239,230,0.04). Typography: tall condensed serif or grotesk for headlines and TCG wordmark, warm humanist sans for body, monospace for coordinates/IDs/timestamps. Signature element: single real compass-dial component (rotating needle) that points to next relevant action. Restraint rule: glassmorphism/blur/glow rationed to 1-2 focal surfaces per screen. Real Indian destination photography, not gradient placeholders. Inspiration: monsoon light through train window, chai-stall warmth, brass compass instruments, heritage stepwell geometry, night-market glow through rickshaw window." key_functionalities: ["Arrival Brief Dashboard with Compass Dial hero + First 24 Hours checklist", "Nearby Now Radar Map with radius filter and glass pins", "Eat & Drink discovery grid with day/night toggle", "Stays booking with autopay setup and remote-work score", "Community Chat location-based group rooms", "Say It Right AI Translator with card flip", "Digital Passport Profile with exploration ledger", "Settings: theme, typography, radius, autopay management"] app_type: travel_companion + short_stay_marketplace + community_social hybrid Provide: color palette (hex), typography scale, spacing tokens, radius tokens, real image URLs for Indian destinations (Gurugram, Mumbai, Delhi, Bengaluru, Goa, Manali, Jaipur, Udaipur), avatar image URLs (diverse Indian nomads), stays/co-living photos, food/cafe photos, night bar photos, iconography choice, screen-by-screen layout guidance for all 8 screens (Arrival Brief, Nearby Now, Eat & Drink, Stays, Community Chat, Say It Right, Passport, Settings), and describe how the CompassDial component should look (states: idle, pointing, confirming).
+EXECUTION IN PROGRESS
+
+
+Reply Icon
+3 Design Agent messages
+
+
+Agent is running...
+
+
+
+
+
+pause

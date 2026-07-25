@@ -1,0 +1,1 @@
+- [ROAM•OS Architecture](roamos-arch.md) — Expo mobile app: 5-tab layout, AsyncStorage-only, no maps/backend, all screen files built.
