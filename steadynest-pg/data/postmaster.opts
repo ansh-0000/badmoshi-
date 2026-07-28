@@ -1,0 +1,1 @@
+C:/dev/steadynest-pg/extract/pgsql/bin/postgres.exe "-D" "C:/dev/steadynest-pg/data" "-p" "5432"
