@@ -34,6 +34,25 @@ operating commands, and founder gates. Retain the historical sections below for 
 
 ---
 
+## 0a. Where to point your agent: `C:\dev\steadynest`
+
+**Working directory: `C:\dev\steadynest`.** Not `C:\dev`. This is settled, not a preference.
+
+`C:\dev` is the **git root**, but it is not the project. It also contains `steadynest-pg/` (a
+running database), `steadynest-mobile-ui-design/`, and 269 files still tracked under the old
+`Feature-Launch-Plan/` prefix that are pending deletion. `C:\dev\steadynest` is where
+`package.json`, `pnpm-workspace.yaml`, `tsconfig.json`, this file and every runnable command
+live.
+
+Git is unaffected by this choice — it walks up to find `.git`, so `git status`, `git add` and
+`git commit` all work normally from inside `steadynest/`. Paths in git output will be shown
+relative to `C:\dev`; that is expected, not a misconfiguration.
+
+A one-line stub `AGENTS.md` sits at `C:\dev` pointing here, in case an agent is launched at the
+git root. It is a safety net, not an alternative entry point.
+
+---
+
 ## 0. ⚠️ There is a SEPARATE Supabase prototype — this repo is NOT it
 
 An earlier prototype of this same product concept exists elsewhere: plain JavaScript, Supabase
@@ -132,22 +151,21 @@ An external package outside of the pnpm workspace declared a dependency using th
 3. `lib/api-client-react/package.json` uses `catalog:` specifiers (legal for workspace members).
 4. pnpm refuses `catalog:` from an external package. Install aborts.
 
-**The fix** (not yet applied) is to change that one specifier to `"workspace:*"`, which is what
-every other internal dependency uses. Then `catalog:` resolves and pnpm install works.
+**✅ The resolver is FIXED** (`462c17d8`). That specifier is now `"workspace:*"`, matching every
+other internal dependency, and `pnpm install --lockfile-only` resolves 1,186 packages in 12.8s
+where it previously aborted. The duplicate `expo` declaration (`~54.0.36` in `dependencies`,
+`~54.0.27` in `devDependencies`) and the `pnpm-workspace.yaml` placeholder
+(`allowBuilds: better-sqlite3: set this to true or false` — YAML parsed that string as a truthy
+non-boolean rather than erroring; now `false`) were fixed in the same commit.
 
-An earlier attempt to run `pnpm install` in this broken state **quarantined 50 packages** into
-`node_modules/.ignored` — including `expo`, `react`, and `react-native` — and left the app
-unable to start. Recovery was `npm ci`, which produced the hybrid. **Do not run `pnpm install`
-until the specifier is fixed**, and if you do fix it, verify the app still boots before
-declaring victory.
-
-Related, unfixed: `artifacts/roamos/package.json` declares **`expo` twice** —
-`dependencies: "~54.0.36"` and `devDependencies: "~54.0.27"`. Whichever the resolver picks is
-luck. Collapse to one entry in `dependencies`.
-
-Also note `pnpm-workspace.yaml` contains a literal placeholder that was never filled in:
-`allowBuilds: better-sqlite3: set this to true or false`. Fix it to a real boolean when you
-touch that file.
+> ⚠️ **The installed `node_modules` is still the npm one.** Resolution working is not the same
+> as the tree being migrated. A full `pnpm install` that rewrites `node_modules` has **not** been
+> run.
+>
+> Do it in one sitting, with the app verified booting on the emulator afterwards, and be ready
+> to fall back to `npm ci`. The last `pnpm install` attempted against the broken specifier
+> **quarantined 50 packages** into `node_modules/.ignored` — including `expo`, `react` and
+> `react-native` — and left the app unable to start at all.
 
 ### 2.3 Android emulator vs. physical phone — the host resolver already handles both
 
@@ -511,15 +529,49 @@ SOS is safety-critical. Four defects were found and fixed in `app/sos-active.tsx
    path was the untested one. Now `AbortSignal.timeout(6000)`.
 2. **Only `trustedContacts[0]` was messaged.** Every other contact was marked pending and never
    contacted by any path. Now one composer addressed to all of them.
-3. **It opens a draft, it does not send.** `Linking.openURL('sms:…')` fills the composer; the
-   user must still press Send. Silent SMS needs Android `SEND_SMS`, which is unavailable in Expo
-   Go and which Google Play restricts to apps whose core function is SMS — a rental app would be
-   rejected for requesting it. iOS has no equivalent at all. **The composer is the ceiling.**
+3. **It opens a draft, it does not send — and this cannot be fixed.** See §5.7a. **The composer
+   is the ceiling.** Do not attempt to "solve" it.
 4. **The UI claimed success it could not know.** Contact status was set to `notified` the instant
    the draft opened. Replaced with states that describe what is actually known: `dispatched`
    (server confirmed via Twilio), `draft_opened` (labelled "Press Send", gold, deliberately no
    green tick), `failed`, `pending` — plus an explicit "Nothing has been sent yet" warning and a
    Reopen action.
+
+### 5.7a Why defect #3 is permanently unfixable — read before "solving" it
+
+This will look like a missing feature to anyone who has not read this. It is not. **The app
+cannot send an SMS without the user pressing Send, and no amount of engineering changes that.**
+
+There are exactly three ways an app could send SMS silently, and all three are closed:
+
+1. **Android `SEND_SMS` permission.** Technically capable, and the obvious answer. But Google
+   Play's SMS and Call Log Permissions policy restricts `SEND_SMS` to apps whose **core,
+   registered function** is SMS — a default SMS handler, or a device-backup or enterprise-device-
+   management app. A rental app does not qualify under any of the permitted use cases, and
+   requesting it triggers a policy review that a rental app fails. The consequence is not a
+   warning: **the app is rejected from the Play Store, or removed if already listed.** The
+   product cannot ship at all. Trading the entire distribution channel for one automated message
+   is not a trade worth making, and a "safety" feature that prevents the app existing protects
+   nobody.
+2. **iOS.** There is no equivalent API at any permission level. `MFMessageComposeViewController`
+   always presents the composer and always requires the user to tap Send. Apple has never
+   shipped a programmatic-send API for third-party apps. There is nothing to request.
+3. **Expo Go / the managed workflow.** Even setting aside policy, `SEND_SMS` needs a native
+   module and a custom dev client. It is unavailable in Expo Go, which is the entire current
+   development loop.
+
+**Therefore the only correct engineering response is the honest UI**, which is what now ships:
+the status says `draft_opened` / "Press Send" in gold with deliberately no green tick, plus an
+explicit "Nothing has been sent yet" warning and a Reopen action. The bug was never the draft —
+it was the UI claiming a delivery that had not happened.
+
+**Server-side dispatch is the real answer, and it is a different feature.** `POST /api/sos/trigger`
+already sends via Twilio when `TWILIO_*` is configured, and returns `dispatched: true`, which is
+the one path allowed to report a message as actually sent. That is where effort should go: it
+needs auth, a working rate limiter, and real Twilio credentials — not a permission request that
+would delist the app.
+
+If a future agent proposes adding `SEND_SMS`, the answer is no, and this section is why.
 
 **Still required before any SOS copy may claim it works:** `requireAuth` and a correctly mounted
 rate limiter on the endpoint (§5.3), and **verification on a physical device with mobile data

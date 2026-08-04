@@ -8,9 +8,6 @@ past decisions — read **[`AGENTS.md`](AGENTS.md)** first. It is the long-lived
 and was written to be read cold. `CLAUDE.md` holds the same material for Claude Code. This file
 does not repeat them.
 
-> **Read `AGENTS.md` §2 before running anything.** Postgres is a portable install, not Docker.
-> `pnpm install` is broken and must not be run. Both will waste an hour otherwise.
-
 ## Current verified state - 4 August 2026
 
 The status line above is historical. The latest verified work is:
@@ -30,6 +27,40 @@ The status line above is historical. The latest verified work is:
 
 Use [`docs/VERIFIED_TAKEOVER_STATE.md`](docs/VERIFIED_TAKEOVER_STATE.md) as the current status
 matrix. The older sections below remain valuable history but contain superseded runtime claims.
+
+---
+
+## ⛔ READ FIRST: this repo does NOT build from a clean clone
+
+**Do not `git clone` this repo and expect to run it.** You will get a tree that cannot install
+and cannot start, and nothing about the failure will explain why. Work in the existing checkout
+at **`C:\dev\steadynest`**, which is complete on disk.
+
+**Why:** the git root is `C:\dev`, and the project is mid-migration between two layouts. Until
+recently `steadynest/` had **zero** tracked files — the entire runnable tree lived outside git.
+Only files touched in the last two sessions have been committed, so what is in the repo at that
+path is a **partial tree**: roughly a dozen source files whose imports, `package.json` siblings
+and asset directories are still untracked. Meanwhile 269 files remain tracked under the old
+`Feature-Launch-Plan/` prefix and show as pending deletions.
+
+Both halves are correct on disk. Neither half is complete in git.
+
+**This resolves when the flatten happens**, which is blocked on the founder — see §5.3. Until
+then:
+
+| | |
+|---|---|
+| **Source of truth** | the working tree at `C:\dev\steadynest`, not the repo |
+| **Safe** | committing individual files you change, by explicit path |
+| **Not safe** | cloning fresh; `git checkout` of the old branch; staging the pending deletions; anything that assumes the repo reflects the disk |
+
+If the working tree is lost, the project is lost. That is the current state, and it is the single
+strongest argument for resolving the flatten early.
+
+> **Also before running anything (`AGENTS.md` §2):** Postgres is a portable install at
+> `C:\dev\steadynest-pg`, **not** Docker — Docker Desktop cannot start on this machine.
+> A full `pnpm install` must not be run yet (the resolver is fixed, but the installed
+> `node_modules` is still the npm one and swapping it needs the app verified afterwards).
 
 ---
 
@@ -165,8 +196,8 @@ These are cheap now — the expensive part (finding the cause) is done.
 
 | Issue | Root cause | Fix |
 |---|---|---|
-| `pnpm install` fails | `artifacts/roamos` declares `"@workspace/api-client-react": "file:../../lib/api-client-react"`. `file:` makes pnpm treat it as **external to the workspace**, and external packages may not use `catalog:` — which `lib/api-client-react` does. Reproduced: `ERR_PNPM_SPEC_NOT_SUPPORTED_BY_ANY_RESOLVER` | Change to `"workspace:*"`. Then verify the app still boots — a previous `pnpm install` in this broken state quarantined 50 packages including `expo`, `react` and `react-native` |
-| Duplicate `expo` declaration | `dependencies: "~54.0.36"` **and** `devDependencies: "~54.0.27"` | Collapse to one entry in `dependencies` |
+| ~~`pnpm install` fails~~ **FIXED** `462c17d8` | `file:` made pnpm treat `@workspace/api-client-react` as external to the workspace, and external packages may not use `catalog:` specifiers — which it does. | Now `workspace:*`. Verified: resolves 1,186 packages in 12.8s. **Still to do:** a full `pnpm install` that rewrites `node_modules`, which must be done in one sitting with the app verified booting after |
+| ~~Duplicate `expo` declaration~~ **FIXED** `462c17d8` | Pinned twice, so which won was luck | `dependencies` keeps `~54.0.36` |
 | Tira AI down | Credential is not a Gemini API key — 53 chars starting `AQ.`, not `AIzaSy…`. Tested across three model versions and both auth mechanisms; **every** combination 401s, including plain `generateContent` with no tools | Needs a valid AI Studio key (§5). No code change |
 | SOS rate limiter never fires | `app.ts` registers it at `/api/security/sos`; the router mounts at `/api/sos` | Fix the mount path |
 | `POST /api/sos/trigger` unauthenticated | Never had `requireAuth`, and takes `contacts` from the body | Add `requireAuth`; derive contacts server-side |
@@ -175,7 +206,7 @@ These are cheap now — the expensive part (finding the cause) is done.
 | `listings.currency` defaults to `USD` | Schema default and the zod `createListingSchema` default, on an India-only product. UI hardcodes `₹` so it renders right by accident | Change both defaults to `INR` |
 | pino PII redaction absent | `routes/sos.ts` uses `console.log`, bypassing pino entirely — raw coordinates and trusted-contact phone numbers | Configure redaction; remove the `console.log`s |
 | `tira.tsx` reads the wrong token key | Reads `AsyncStorage['auth_token']`; tokens live in SecureStore under `access_token`. Harmless only because the route is not auth-gated | Fix the key — and it becomes a real bug the moment `/guide/*` gets `requireAuth` |
-| `pnpm-workspace.yaml` placeholder | `allowBuilds: better-sqlite3: set this to true or false` — a literal unfilled placeholder where a boolean belongs | Set a real boolean |
+| ~~`pnpm-workspace.yaml` placeholder~~ **FIXED** `462c17d8` | YAML parsed the placeholder string as a truthy non-boolean rather than erroring | Set to `false`; not a direct dependency and needs native compilation |
 
 ---
 
