@@ -88,10 +88,8 @@ interface AppContextType {
   trustedContacts: string[];
   setTrustedContacts: (contacts: string[]) => void;
 
-  // Dual-role
+  // Active capability mode, derived from the authenticated user's role.
   activeRole: 'tenant' | 'landlord';
-  setActiveRole: (role: 'tenant' | 'landlord') => void;
-  toggleRole: () => void;
   activeLease: any;
   setActiveLease: (lease: any) => void;
 
@@ -278,7 +276,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setCompletedItems([]);
     setVisitedCities(['delhi']);
-    setActiveRole('tenant');
     setActiveLease(null);
     // Navigation is not reset here: AuthGuard in app/_layout.tsx watches
     // `user` and redirects to /login the moment it goes null, which also
@@ -308,16 +305,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   //
   // It now mirrors `user.role`, and the Profile switcher calls setUserRole()
   // to change it for real. One role, one source of truth.
-  const [activeRole, setActiveRole] = useState<'tenant' | 'landlord'>('tenant');
+  // Keep this derived. A local role override can drift during a failed role
+  // update and expose client capabilities the server will not honour.
+  const activeRole: 'tenant' | 'landlord' = user?.role ?? 'tenant';
   const [activeLease, setActiveLease] = useState<any>(null); // For mocked lease/payment state
-
-  useEffect(() => {
-    if (user?.role) setActiveRole(user.role);
-  }, [user?.role]);
-
-  const toggleRole = () => {
-    setActiveRole(prev => (prev === 'tenant' ? 'landlord' : 'tenant'));
-  };
 
   return (
     <AppContext.Provider
@@ -329,7 +320,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         autopayEnabled, setAutopayEnabled,
         visitedCities, markCityVisited,
         trustedContacts, setTrustedContacts,
-        activeRole, setActiveRole, toggleRole,
+        activeRole,
         activeLease, setActiveLease,
         theme,
         setTheme,
