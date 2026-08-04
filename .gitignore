@@ -35,3 +35,17 @@ postmaster.opts
 *.dump
 *.sql.gz
 *.bak
+
+# Environment files anywhere in this mixed-layout checkout. Examples remain
+# trackable so required variable names can be documented without their values.
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+
+# Local one-off tooling and diagnostic artifacts. These are not project source
+# and must not be swept into a reconciliation commit.
+/i.cmd
+/steadynest/emulator_screen*.png
+/steadynest/artifacts/roamos/Task
+/steadynest/artifacts/roamos/com.android.ide.common.process.ProcessException
