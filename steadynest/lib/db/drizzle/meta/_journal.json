@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1784626451003,
+      "tag": "0000_reflective_archangel",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784626876135,
+      "tag": "0001_concerned_whirlwind",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784797469106,
+      "tag": "0002_eminent_kree",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1785250055118,
+      "tag": "0003_profile_leases_contacts",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1785697468948,
+      "tag": "0004_tenant_preferences",
+      "breakpoints": true
+    }
+  ]
+}
