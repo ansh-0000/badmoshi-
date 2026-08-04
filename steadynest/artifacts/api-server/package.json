@@ -9,7 +9,8 @@
     "start": "node --env-file=.env --enable-source-maps ./dist/index.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test:sos": "node ./scripts/run-sos-tests.mjs test/sos.test.ts",
-    "test:chat": "node ./scripts/run-sos-tests.mjs test/chat-auth.test.ts"
+    "test:chat": "node ./scripts/run-sos-tests.mjs test/chat-auth.test.ts",
+    "test:tira": "node ./scripts/run-sos-tests.mjs test/tira.test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.11.0",
