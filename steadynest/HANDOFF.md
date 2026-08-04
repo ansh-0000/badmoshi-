@@ -11,6 +11,26 @@ does not repeat them.
 > **Read `AGENTS.md` §2 before running anything.** Postgres is a portable install, not Docker.
 > `pnpm install` is broken and must not be run. Both will waste an hour otherwise.
 
+## Current verified state - 4 August 2026
+
+The status line above is historical. The latest verified work is:
+
+- `88f3762f`: safe Git/repository reconciliation guidance; the tree rewrite remains a founder
+  gate.
+- `dbedae18`, `07ca52d6`, and `fbe2092c`: SOS identity/rate protection, server-side chat
+  membership, and guarded Tira (`test:sos`, `test:chat`, and `test:tira` passing).
+- `92f1416a`: reduced Metro watch scope; the Pixel 7a AVD booted and rendered the app.
+- `26f0d2b3`: reproducible migrations. The current ledger contains six migrations.
+- `d8c97113`: active UI mode derives from authenticated role; full capabilities remain a founder
+  decision.
+- `f862ec77`: authenticated landlord portfolio/property first slice, including a 50-record UI
+  bound. Operational landlord workflows remain unbuilt.
+- `2dc04840`: Razorpay Route replacement plan only; payments are not enabled.
+- `e898c5e2`: 15 fictional INR Delhi NCR launch listings and a separate 10,000-row load fixture.
+
+Use [`docs/VERIFIED_TAKEOVER_STATE.md`](docs/VERIFIED_TAKEOVER_STATE.md) as the current status
+matrix. The older sections below remain valuable history but contain superseded runtime claims.
+
 ---
 
 ## 0. Where things stand in one paragraph

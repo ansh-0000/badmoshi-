@@ -10,6 +10,28 @@ Rules here exist because something specific went wrong. The incident is recorded
 rule on purpose: a rule you understand survives contact with a situation its author never
 imagined, and a rule you don't will be worked around the first time it is inconvenient.
 
+## Current verified takeover state - 4 August 2026
+
+The working tree, not the historical reports, establishes these current facts:
+
+- The portable Postgres/PostGIS instance at `C:\dev\steadynest-pg` is the database runtime;
+  migrations apply cleanly from an empty database and the migration ledger reaches six.
+- SOS, chat, and Tira have focused server tests and runtime checks. SMS/SOS delivery and Gemini
+  remain unverified external services and must not be described as working end-to-end.
+- The Android development build booted and rendered on the local Pixel 7a AVD. Its missing Google
+  Play services cause the expected map-provider warning.
+- The landlord portfolio/property first slice is authenticated and bounded; property inquiry,
+  lease, payment status, and communication workflows are not complete.
+- Active UI mode derives from the authenticated role. A durable capability schema and landlord
+  capability policy are blocked on founder direction.
+- Razorpay Route is planned, not integrated. Legacy Stripe source is an inventory/replacement
+  item, not a launch-ready payment feature.
+- `npm run seed:launch` creates 15 fictional Delhi NCR, INR listings. `npm run seed:load` creates
+  the separate 10,000-row performance fixture; it is not approved launch inventory.
+
+Read [`docs/VERIFIED_TAKEOVER_STATE.md`](docs/VERIFIED_TAKEOVER_STATE.md) for the evidence,
+operating commands, and founder gates. Retain the historical sections below for incident context.
+
 ---
 
 ## 0. ⚠️ There is a SEPARATE Supabase prototype — this repo is NOT it

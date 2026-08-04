@@ -4,6 +4,14 @@ Read this whole file before writing or changing any code. It is the source of tr
 exists, what's real vs. stubbed, and what NOT to do. **If anything here conflicts with what you
 see in the actual code, trust the code and flag the mismatch** — this file can go stale.
 
+> **Historical context notice — 4 August 2026.** This file preserves earlier handoff material.
+> For current verified runtime state, use
+> [`docs/VERIFIED_TAKEOVER_STATE.md`](docs/VERIFIED_TAKEOVER_STATE.md) and `AGENTS.md` first.
+> In particular: Postgres is portable rather than Docker-managed; do not run a full `pnpm install`;
+> legacy Stripe source is not an active payment integration; SOS SMS and Gemini are not verified
+> live services; and the guarded `/api/guide` route does not fabricate a fallback response.
+> Historical claims about only three migrations or separate landlord navigation are superseded.
+
 ---
 
 ## ⚠️ 0. There is a SEPARATE Supabase prototype — this repo is NOT it
