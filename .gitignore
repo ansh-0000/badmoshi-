@@ -1,2 +1,37 @@
 *.zip
 *.exe
+
+# ── Live database directories ────────────────────────────────────────────────
+# steadynest-pg/ is a portable PostgreSQL install (see steadynest/AGENTS.md §2.1).
+# Its data/ directory was committed and pushed to this repo by mistake: 25,215
+# files, ~1.38 GB, containing the raw on-disk tables — users and their argon2
+# password hashes, phone numbers, OTP challenges, trusted emergency contacts,
+# messages, leases and transactions.
+#
+# A database data directory must never be tracked. It is not source, it is not
+# reproducible from source, every running query rewrites it, and it holds
+# whatever personal data the app has collected. Back it up with pg_dump, not git.
+steadynest-pg/
+**/pgdata/
+**/postgres-data/
+**/postgresql-data/
+*.pgdata/
+
+# Anything a database process writes directly
+**/pg_wal/
+**/pg_xact/
+postmaster.pid
+postmaster.opts
+*.pid
+
+# SQLite / embedded databases — the app uses expo-sqlite for its offline outbox
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Database dumps: often as sensitive as the live directory, and usually large
+*.dump
+*.sql.gz
+*.bak

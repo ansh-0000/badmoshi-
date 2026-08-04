@@ -1,5 +1,0 @@
-# mobilitydb_datagen extension
-comment = 'MobilityDB random data generator functions'
-default_version = '1.3.0'
-relocatable = true
-requires = 'mobilitydb'

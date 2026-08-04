@@ -1,3 +1,0 @@
--- Just tag extension postgis_sfcgal version as "ANY"
--- Installed by postgis_sfcgal 3.6.2
--- Built on 2026-02-10 06:37:07

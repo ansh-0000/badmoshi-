@@ -1,3 +1,0 @@
--- Just tag extension address_standardizer_data_us version as "ANY"
--- Installed by address_standardizer_data_us 3.6.2
--- Built on 2026-02-10 06:38:03
