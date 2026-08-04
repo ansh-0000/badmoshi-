@@ -7,7 +7,12 @@ import { build } from "esbuild";
 
 const apiDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outputDirectory = path.join(apiDirectory, "tmp", "test");
-const outputFile = path.join(outputDirectory, "sos.test.cjs");
+const [entryFile = "test/sos.test.ts"] = process.argv.slice(2);
+const entryPath = path.resolve(apiDirectory, entryFile);
+if (!entryPath.startsWith(`${apiDirectory}${path.sep}`) || !entryPath.endsWith(".ts")) {
+  throw new Error("The test entry point must be a TypeScript file inside artifacts/api-server.");
+}
+const outputFile = path.join(outputDirectory, `${path.basename(entryFile, ".ts")}.cjs`);
 
 await rm(outputFile, { force: true });
 await mkdir(outputDirectory, { recursive: true });
@@ -16,7 +21,7 @@ await mkdir(outputDirectory, { recursive: true });
 // Bundle this isolated test so Node's built-in test runner executes the same
 // source graph without requiring a new workspace package manager install.
 await build({
-  entryPoints: [path.join(apiDirectory, "test", "sos.test.ts")],
+  entryPoints: [entryPath],
   outfile: outputFile,
   bundle: true,
   platform: "node",
