@@ -514,9 +514,52 @@ data directory, not a dump. It contains the `users` table (argon2 hashes, emails
 `otp_challenges`, `trusted_contacts` (emergency contact numbers), `messages`, `leases`, and
 `transactions`.
 
-This is unresolved and needs a founder decision, because removing it means rewriting history on
-a repo a co-founder may have branches against. **Do not stage anything under that path. Do not
-"tidy" its modified files by committing them.**
+**Tracking is removed** (`d6ec3d39`) — `git rm -r --cached` only, so every file remains on disk
+and Postgres runs against it unaffected. `.gitignore` now covers the directory and the other
+shapes this could take (`pgdata/`, `pg_wal/`, `postmaster.pid`, `*.sqlite`, `*.dump`, …). **Do
+not stage anything under that path. Do not "tidy" its modified files by committing them.**
+
+The data is still reachable in history, in `b406ead2` and `46be8eca`.
+
+### 5.6a FOUNDER DECISION — history rewrite: bundle it with the flatten, do not do it now
+
+**Decided 4 Aug 2026. Do not rewrite history to remove the database directory as a security
+measure, and do not propose it as one.** The reasoning matters more than the instruction:
+
+**A rewrite does not unpublish already-public data.** GitHub keeps unreferenced commits
+reachable by SHA until garbage collection, forks retain independent copies, and anything that
+crawled the repository already has what it has. Rewriting removes the data from the default
+view; it does not retract it. **Taking the repository private is the action that stops ongoing
+exposure**, and that is being done separately. Rewriting on top of it buys very little.
+
+**The real remediation is credential rotation, and it is independent of git.** Anything live in
+that dump gets rotated regardless of what happens to history. The founder is separately treating
+the phone numbers entered during OTP testing as personal data under the DPDP Act — correctly,
+and irrespective of how few there are.
+
+**The genuine argument for rewriting is size, not security.** Measured 4 Aug 2026:
+
+| | |
+|---|---|
+| `steadynest-pg/` in the tree | ~1,384 MB across 25,215 files |
+| Everything else in the tree | **4.2 MB across 286 files** |
+| `.git` | **833 MB** |
+| Commits touching the path | 3 (`b406ead2`, `46be8eca`, `d6ec3d39`) |
+| Commits whose SHA a rewrite would change | ~19 of 21 |
+| Remote branches affected | 2 — `main`, `archive/pre-steadynest` |
+
+**99.7% of the repository by size is a database directory.** Every clone, CI run and future
+collaborator pays 833 MB to obtain 4.2 MB of code. That is worth fixing on its own merits.
+
+**When: as one operation together with the tree flatten** (§6.1), once the co-founder confirms
+whether any branch expects the nested `Feature-Launch-Plan/` layout. Both are history-shaped
+changes needing the same coordination — every clone re-cloned, every branch rebased. Doing them
+separately means asking everyone to re-clone twice for no additional benefit. Doing it now, with
+2 remote branches and one collaborator, is the cheapest it will ever be; the cost grows with
+every branch added.
+
+**Until the co-founder confirms, nobody rewrites anything.** `d6ec3d39` stopped the bleeding —
+no new database content can enter the repository.
 
 ### 5.7 SOS must not ship until closed and hardware-verified
 
