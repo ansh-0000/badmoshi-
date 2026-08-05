@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "SteadyNest",
+    "slug": "roamos",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/branding/steadynest-icon.png",
+    "scheme": "roamos",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/branding/steadynest-splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#14201A"
+    },
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "com.steadynest.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/branding/steadynest-adaptive-foreground.png",
+        "backgroundColor": "#14201A",
+        "monochromeImage": "./assets/branding/steadynest-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/branding/steadynest-favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://replit.com/"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser",
+      [
+        "expo-sqlite",
+        {
+          "enableUseWebWorkers": true
+        }
+      ],
+      "@sentry/react-native",
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true,
+      "crossOriginIsolated": true
+    }
+  }
+}
