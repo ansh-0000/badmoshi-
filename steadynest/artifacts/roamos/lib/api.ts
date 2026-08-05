@@ -16,14 +16,13 @@ import { ApiError } from "./errorMessage";
 // app at *itself* and can never reach the API. getDevServer is kept as a
 // fallback for a bridged/older runtime.
 //
-// The remaining special case is the Android emulator. There the dev server is
-// reported as localhost, but on Android localhost is the device; the host
-// machine is only reachable at 10.0.2.2. Metro's own port survives this via
-// the emulator's loopback forwarding, but our separate API port does not.
+// The remaining special case is the Android emulator. Metro can report either
+// localhost or the host machine's LAN address there, but the local API must
+// still use the emulator's fixed 10.0.2.2 alias. Metro's own port survives via
+// its forwarding, but our separate API port does not.
 //
-// The rewrite is gated on actually being an emulator. A physical device
-// debugging over `adb reverse` also reports localhost, and there 10.0.2.2 is a
-// dead address - so matching on "localhost" alone is not enough.
+// The rewrite is gated on actually being an emulator. A physical device needs
+// the LAN host, while 10.0.2.2 is only meaningful from an Android AVD.
 const ANDROID_EMULATOR_HOST = "10.0.2.2";
 
 function isAndroidEmulator(): boolean {
@@ -63,10 +62,7 @@ function devServerHost(): string | null {
 function resolveDevHost(): string | null {
   const host = devServerHost();
   if (!host) return null;
-  if (isAndroidEmulator() && (host === "localhost" || host === "127.0.0.1")) {
-    return ANDROID_EMULATOR_HOST;
-  }
-  return host;
+  return isAndroidEmulator() ? ANDROID_EMULATOR_HOST : host;
 }
 
 let backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
