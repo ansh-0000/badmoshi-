@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE } from '@/constants/api';
-import { API_BASE_URL, setTokens, clearTokens, getAccessToken, getRefreshToken } from '@/lib/api';
+import { API_BASE_URL, apiFetch, setTokens, clearTokens, getAccessToken, getRefreshToken } from '@/lib/api';
 import { toFriendlyError } from '@/lib/errorMessage';
 import { clearAllCaches } from '@/lib/queryClient';
 
@@ -116,25 +116,60 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Load persisted state on mount
   useEffect(() => {
-    AsyncStorage.getItem('@roamos_v2')
-      .then(raw => {
-        if (raw) {
+    let mounted = true;
+
+    const restorePersistedState = async () => {
+      try {
+        const [raw, accessToken, refreshToken] = await Promise.all([
+          AsyncStorage.getItem('@roamos_v2'),
+          getAccessToken(),
+          getRefreshToken(),
+        ]);
+
+        if (!mounted || !raw) return;
+
+        const p = JSON.parse(raw);
+        // The profile cache is not proof of an authenticated session. It can
+        // outlive SecureStore after a logout, reinstall, token clear, or a
+        // local API restart that invalidates the in-memory refresh-token set.
+        // Validate through apiFetch so it can refresh a valid access token,
+        // but never route a stale cached role into a protected area.
+        let hasValidSession = false;
+        if (p.user && (accessToken || refreshToken)) {
           try {
-            const p = JSON.parse(raw);
-            if (p.user) setUser(p.user);
-            if (p.currentCityId) setCurrentCityId(p.currentCityId);
-            if (typeof p.radius === 'number') setRadius(p.radius);
-            if (p.completedItems) setCompletedItems(p.completedItems);
-            if (p.autopayEnabled) setAutopayEnabled(p.autopayEnabled);
-            if (p.visitedCities) setVisitedCities(p.visitedCities);
-            if (p.theme) setTheme(p.theme);
-            if (p.trustedContacts) setTrustedContacts(p.trustedContacts);
-          } catch (e) {
-            console.error('Failed to parse roamos state', e);
+            const response = await apiFetch('/api/auth/verify');
+            hasValidSession = response.ok;
+          } catch {
+            // A session that cannot be established is deliberately treated as
+            // logged out. AuthGuard will send the user to the sign-in screen.
           }
         }
-      })
-      .finally(() => setIsAuthLoading(false));
+
+        if (p.user && hasValidSession) {
+          setUser(p.user);
+        } else if (p.user) {
+          await clearTokens();
+          await clearAllCaches();
+        }
+        if (p.currentCityId) setCurrentCityId(p.currentCityId);
+        if (typeof p.radius === 'number') setRadius(p.radius);
+        if (p.completedItems) setCompletedItems(p.completedItems);
+        if (p.autopayEnabled) setAutopayEnabled(p.autopayEnabled);
+        if (p.visitedCities) setVisitedCities(p.visitedCities);
+        if (p.theme) setTheme(p.theme);
+        if (p.trustedContacts) setTrustedContacts(p.trustedContacts);
+      } catch (e) {
+        console.error('Failed to restore authenticated app state', e);
+      } finally {
+        if (mounted) setIsAuthLoading(false);
+      }
+    };
+
+    void restorePersistedState();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Save changes

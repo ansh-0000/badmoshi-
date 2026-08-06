@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#ECEAE3;-webkit-font-smoothing:antialiased}
+  a{color:#3A5245;text-decoration:none}
+  a:hover{color:#2C3E34}
+  ::selection{background:rgba(58,82,69,0.16)}
+</style>
+</helmet>
+
+<div style="position:relative;min-height:100vh;background:#ECEAE3;padding:60px 64px 96px;font-family:'Inter',sans-serif">
+<sc-if value="{{ blueprintGrid }}" hint-placeholder-val="{{ false }}">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(20,32,26,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(20,32,26,0.05) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0"></div>
+</sc-if>
+
+<div style="position:relative;z-index:1">
+  <div style="margin-bottom:52px;max-width:1244px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.22em;text-transform:uppercase;color:#3A5245;font-weight:600">SteadyNest · Ram OS · Architecture · Deliverable 1</div>
+    <div style="font-family:'Playfair Display',serif;font-size:44px;font-weight:600;color:#14201A;margin-top:12px;letter-spacing:-0.015em;line-height:1.1">How the thing actually works</div>
+    <div style="font-size:15px;color:rgba(20,32,26,0.55);margin-top:14px;max-width:760px;line-height:1.6;text-wrap:pretty">Five diagrams, presentation-ready: the system, the two money-and-identity flows a reviewer will ask about first, the security posture, and the safety feature that has to work when nothing else does. Same palette as the product — Moss for our own code, Ink for anything we don't control, Rust only for failure and emergency, Gold for the thing to look at.</div>
+    <div style="display:flex;gap:34px;margin-top:30px;padding-top:26px;border-top:1px solid rgba(20,32,26,0.12);flex-wrap:wrap">
+      <div style="max-width:280px"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.18em;color:#3A5245;margin-bottom:7px">ASSUMED AUDIENCE</div><div style="font-size:13.5px;color:rgba(20,32,26,0.6);line-height:1.55">A technical co-founder reading it cold, and an investor who wants to see that security was designed, not bolted on.</div></div>
+      <div style="max-width:280px"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.18em;color:#3A5245;margin-bottom:7px">DRAWING CONVENTION</div><div style="font-size:13.5px;color:rgba(20,32,26,0.6);line-height:1.55">Solid line = a call we make. Dashed rust = a path that is deliberately blocked or a failure branch. Mono type = anything a developer would type.</div></div>
+      <div style="max-width:280px"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.18em;color:#3A5245;margin-bottom:7px">HONEST CAVEAT</div><div style="font-size:13.5px;color:rgba(20,32,26,0.6);line-height:1.55">Autopay, chat and SOS are drawn as designed, not as shipped — those three are still being debugged. Say so out loud in the co-founder walkthrough.</div></div>
+    </div>
+  </div>
+
+  <sc-if value="{{ showSystem }}" hint-placeholder-val="{{ true }}">
+  <div style="background:#F9F8F4;border-radius:28px;padding:46px 52px 52px;box-shadow:0 34px 76px -46px rgba(20,32,26,0.45);margin-bottom:44px;width:1244px">
+    <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:16px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.2em;color:#3A5245">01</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:rgba(20,32,26,0.42)">System architecture</span>
+    </div>
+    <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:600;color:#14201A;letter-spacing:-0.015em;line-height:1.15">The client never touches a vendor</div>
+    <div style="font-size:14.5px;color:rgba(20,32,26,0.55);line-height:1.6;margin-top:12px;max-width:740px;text-wrap:pretty">Three layers we own, and a column of services we rent. Every arrow into that column starts inside our API — no key, token or vendor endpoint ever ships inside the app bundle.</div>
+    <div style="height:1px;background:rgba(20,32,26,0.1);margin:32px 0 40px"></div>
+
+    <div style="position:relative;width:1140px;height:664px">
+
+      <div style="position:absolute;left:0;top:0;width:800px;height:168px;border-radius:28px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 18px 44px -32px rgba(20,32,26,0.5);padding:18px 22px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:baseline;gap:12px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:#3A5245">CLIENT</span>
+          <span style="font-size:15px;font-weight:600;color:#14201A">Expo · React Native</span>
+          <div style="flex:1;height:1px;background:rgba(20,32,26,0.1)"></div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.4)">iOS · Android · one codebase</span>
+        </div>
+        <div style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+          <div style="border-radius:18px;background:rgba(58,82,69,0.06);padding:13px 14px;display:flex;flex-direction:column;gap:6px;justify-content:center"><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;color:#14201A">expo-router</span><span style="font-size:11.5px;color:rgba(20,32,26,0.52);line-height:1.4">file-based navigation, deep links</span></div>
+          <div style="border-radius:18px;background:rgba(58,82,69,0.06);padding:13px 14px;display:flex;flex-direction:column;gap:6px;justify-content:center"><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;color:#14201A">react-query</span><span style="font-size:11.5px;color:rgba(20,32,26,0.52);line-height:1.4">cache · retry · invalidate</span></div>
+          <div style="border-radius:18px;background:rgba(58,82,69,0.06);padding:13px 14px;display:flex;flex-direction:column;gap:6px;justify-content:center"><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;color:#14201A">socket.io-client</span><span style="font-size:11.5px;color:rgba(20,32,26,0.52);line-height:1.4">chat · match · SOS receipt</span></div>
+          <div style="border-radius:18px;background:rgba(58,82,69,0.06);padding:13px 14px;display:flex;flex-direction:column;gap:6px;justify-content:center"><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;color:#14201A">expo-secure-store</span><span style="font-size:11.5px;color:rgba(20,32,26,0.52);line-height:1.4">Keychain · Keystore only</span></div>
+        </div>
+      </div>
+
+      <div style="position:absolute;left:0;top:238px;width:800px;height:186px;border-radius:28px;background:#FFFFFF;border:1.5px solid rgba(58,82,69,0.42);box-shadow:0 20px 48px -30px rgba(58,82,69,0.6);padding:18px 22px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:baseline;gap:12px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:#3A5245">API</span>
+          <span style="font-size:15px;font-weight:600;color:#14201A">Node · Express</span>
+          <div style="flex:1;height:1px;background:rgba(58,82,69,0.25)"></div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#3A5245">the only trust boundary</span>
+        </div>
+        <div style="flex:1;display:flex;align-items:stretch">
+          <div style="flex:1;border-radius:20px;border:1px dashed rgba(20,32,26,0.18);padding:11px 12px;display:flex;flex-direction:column;gap:9px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(20,32,26,0.42)">Middleware chain</span>
+            <div style="display:flex;flex-wrap:wrap;gap:5px">
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">helmet</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">cors</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">rate-limit</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">zod validate</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">verifyJWT</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">requestId</span>
+            </div>
+          </div>
+          <div style="flex:0 0 34px;display:flex;align-items:center;justify-content:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="rgba(20,32,26,0.32)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h14M11 2l4 4-4 4"></path></svg></div>
+          <div style="flex:1;border-radius:20px;border:1px dashed rgba(20,32,26,0.18);padding:11px 12px;display:flex;flex-direction:column;gap:9px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(20,32,26,0.42)">Routes</span>
+            <div style="display:flex;flex-wrap:wrap;gap:5px">
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">/auth</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">/properties</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">/leases</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">/payments</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">/chat</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:rgba(58,82,69,0.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:#2C3E34">/sos</span>
+            </div>
+          </div>
+          <div style="flex:0 0 34px;display:flex;align-items:center;justify-content:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="rgba(20,32,26,0.32)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h14M11 2l4 4-4 4"></path></svg></div>
+          <div style="flex:1;border-radius:20px;border:1px solid rgba(58,82,69,0.38);background:rgba(58,82,69,0.09);padding:11px 12px;display:flex;flex-direction:column;gap:9px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#3A5245">Services · vendor edge</span>
+            <div style="display:flex;flex-wrap:wrap;gap:5px">
+              <span style="padding:4px 9px;border-radius:9999px;background:#3A5245;font-family:'JetBrains Mono',monospace;font-size:10px;color:#F9F8F4">ai</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:#3A5245;font-family:'JetBrains Mono',monospace;font-size:10px;color:#F9F8F4">geo</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:#3A5245;font-family:'JetBrains Mono',monospace;font-size:10px;color:#F9F8F4">sms</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:#3A5245;font-family:'JetBrains Mono',monospace;font-size:10px;color:#F9F8F4">payments</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:#3A5245;font-family:'JetBrains Mono',monospace;font-size:10px;color:#F9F8F4">media</span>
+              <span style="padding:4px 9px;border-radius:9999px;background:#3A5245;font-family:'JetBrains Mono',monospace;font-size:10px;color:#F9F8F4">speech</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="position:absolute;left:0;top:494px;width:800px;height:170px;border-radius:28px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 18px 44px -32px rgba(20,32,26,0.5);padding:18px 22px;display:flex;flex-direction:column;gap:13px">
+        <div style="display:flex;align-items:baseline;gap:12px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:#3A5245">DATA</span>
+          <span style="font-size:15px;font-weight:600;color:#14201A">PostgreSQL 15 + PostGIS 3.6</span>
+          <div style="flex:1;height:1px;background:rgba(20,32,26,0.1)"></div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.4)">GIST spatial index</span>
+        </div>
+        <div style="flex:1;display:grid;grid-template-columns:repeat(6,1fr);gap:9px">
+          <div style="border-radius:18px;background:rgba(58,82,69,0.06);padding:11px 11px;display:flex;flex-direction:column;gap:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#14201A">users</span><span style="font-size:10.5px;color:rgba(20,32,26,0.5);line-height:1.35">role, phone, kyc</span></div>
+          <div style="border-radius:18px;background:rgba(226,167,62,0.16);border:1px solid rgba(226,167,62,0.5);padding:11px 11px;display:flex;flex-direction:column;gap:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#14201A">properties</span><span style="font-size:10.5px;color:rgba(20,32,26,0.6);line-height:1.35">geography(Point,4326)</span></div>
+          <div style="border-radius:18px;background:rgba(58,82,69,0.06);padding:11px 11px;display:flex;flex-direction:column;gap:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#14201A">leases</span><span style="font-size:10.5px;color:rgba(20,32,26,0.5);line-height:1.35">11-month terms</span></div>
+          <div style="border-radius:18px;background:rgba(58,82,69,0.06);padding:11px 11px;display:flex;flex-direction:column;gap:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#14201A">payments</span><span style="font-size:10.5px;color:rgba(20,32,26,0.5);line-height:1.35">mandates, debits</span></div>
+          <div style="border-radius:18px;background:rgba(58,82,69,0.06);padding:11px 11px;display:flex;flex-direction:column;gap:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#14201A">messages</span><span style="font-size:10.5px;color:rgba(20,32,26,0.5);line-height:1.35">thread, lang tags</span></div>
+          <div style="border-radius:18px;background:rgba(58,82,69,0.06);padding:11px 11px;display:flex;flex-direction:column;gap:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#14201A">sos_events</span><span style="font-size:10.5px;color:rgba(20,32,26,0.5);line-height:1.35">coords, receipts</span></div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.45);letter-spacing:0.01em">ST_DWithin(location, ST_MakePoint(:lng,:lat)::geography, :radius_m) — Delhi NCR geofence, 2–10 km user radius</div>
+      </div>
+
+      <div style="position:absolute;left:900px;top:186px;width:240px;height:290px;border-radius:28px;background:#14201A;padding:18px;display:flex;flex-direction:column;gap:9px;box-shadow:0 28px 60px -32px rgba(20,32,26,0.75)">
+        <div style="display:flex;flex-direction:column;gap:4px;padding-bottom:10px;border-bottom:1px solid rgba(249,248,244,0.14)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:#E2A73E">EXTERNAL</span>
+          <span style="font-size:13px;font-weight:500;color:rgba(249,248,244,0.65)">Rented, never trusted</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#F9F8F4">Gemini</span><span style="font-size:10.5px;color:rgba(249,248,244,0.45)">Tira AI answers</span></div>
+        <div style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#F9F8F4">Google Maps · Places</span><span style="font-size:10.5px;color:rgba(249,248,244,0.45)">geocode, what's around here</span></div>
+        <div style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#F9F8F4">MSG91</span><span style="font-size:10.5px;color:rgba(249,248,244,0.45)">OTP + SOS SMS, DLT templates</span></div>
+        <div style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#F9F8F4">Razorpay</span><span style="font-size:10.5px;color:rgba(249,248,244,0.45)">eMandate · UPI Autopay</span></div>
+        <div style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#F9F8F4">Object storage</span><span style="font-size:10.5px;color:rgba(249,248,244,0.45)">listing photos, KYC, SOS media</span></div>
+        <div style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#F9F8F4">Speech</span><span style="font-size:10.5px;color:rgba(249,248,244,0.45)">STT · translate · TTS</span></div>
+      </div>
+
+      <svg width="1140" height="664" viewBox="0 0 1140 664" style="position:absolute;inset:0;pointer-events:none">
+        <defs>
+          <marker id="snArM" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0 0.9L7.4 4.5L0 8.1Z" fill="#3A5245"></path></marker>
+          <marker id="snArG" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0 0.9L7.4 4.5L0 8.1Z" fill="rgba(20,32,26,0.34)"></path></marker>
+          <marker id="snArR" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0 0.9L7.4 4.5L0 8.1Z" fill="#A85232"></path></marker>
+        </defs>
+        <path d="M170 168 V231" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snArM)"></path>
+        <path d="M560 238 V175" stroke="rgba(20,32,26,0.3)" stroke-width="1.6" fill="none" marker-end="url(#snArG)"></path>
+        <path d="M170 424 V487" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snArM)"></path>
+        <path d="M560 494 V431" stroke="rgba(20,32,26,0.3)" stroke-width="1.6" fill="none" marker-end="url(#snArG)"></path>
+        <path d="M802 324 H893" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snArM)"></path>
+        <path d="M898 338 H807" stroke="rgba(20,32,26,0.3)" stroke-width="1.6" fill="none" marker-end="url(#snArG)"></path>
+        <path d="M800 84 C 872 84, 930 104, 930 171" stroke="#A85232" stroke-width="1.7" stroke-dasharray="6 5" fill="none" marker-end="url(#snArR)"></path>
+      </svg>
+
+      <div style="position:absolute;left:182px;top:186px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;color:#3A5245;letter-spacing:0.06em">request · TLS 1.3 + JWT</div>
+      <div style="position:absolute;left:400px;top:186px;width:148px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:rgba(20,32,26,0.42);letter-spacing:0.06em">response · JSON</div>
+      <div style="position:absolute;left:182px;top:442px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;color:#3A5245;letter-spacing:0.06em">parameterised SQL · pg pool</div>
+      <div style="position:absolute;left:400px;top:442px;width:148px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:rgba(20,32,26,0.42);letter-spacing:0.06em">row sets</div>
+      <div style="position:absolute;left:800px;top:296px;width:100px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#3A5245;letter-spacing:0.1em;text-transform:uppercase">proxied</div>
+      <div style="position:absolute;left:800px;top:346px;width:100px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(20,32,26,0.42);letter-spacing:0.06em">keys server-side</div>
+      <div style="position:absolute;left:878px;top:88px;width:28px;height:28px;border-radius:9999px;background:#F9F8F4;border:1.5px solid #A85232;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px -6px rgba(20,32,26,0.4)"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#A85232" stroke-width="2" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"></path></svg></div>
+      <div style="position:absolute;left:944px;top:84px;width:196px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.14em;color:#A85232">CLIENT → VENDOR</div>
+        <div style="font-size:12px;color:rgba(168,82,50,0.85);margin-top:4px;line-height:1.45">No direct path, ever. Not for maps, not for AI, not for a receipt.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:40px;border-radius:28px;background:rgba(168,82,50,0.07);border:1px solid rgba(168,82,50,0.22);padding:22px 26px;display:flex;gap:30px;width:1140px">
+      <div style="flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.18em;color:#A85232;padding-top:2px">WHY IT MATTERS</div>
+      <div style="font-size:13.5px;color:rgba(20,32,26,0.68);line-height:1.6;text-wrap:pretty">Keys never ship in a bundle anyone can unzip. Vendors stay swappable — MSG91 for another SMS provider is a one-file change. And every third-party call is logged, rate-limited and cached on our side, which is the only reason a pre-revenue app can afford Maps and Gemini at all.</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showAuth }}" hint-placeholder-val="{{ true }}">
+  <div style="background:#F9F8F4;border-radius:28px;padding:46px 52px 52px;box-shadow:0 34px 76px -46px rgba(20,32,26,0.45);margin-bottom:44px;width:1244px">
+    <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:16px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.2em;color:#3A5245">02</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:rgba(20,32,26,0.42)">Authentication flow</span>
+    </div>
+    <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:600;color:#14201A;letter-spacing:-0.015em;line-height:1.15">A phone number in, two tokens out
+</div>
+    <div style="font-size:14.5px;color:rgba(20,32,26,0.55);line-height:1.6;margin-top:12px;max-width:740px;text-wrap:pretty">No password ever exists, so none can leak. The code is hashed before it is stored, dies in ten minutes, and can only be spent once. The access token is short-lived on purpose — the refresh token is the one that matters, and it is replaced every single time it is used.</div>
+    <div style="height:1px;background:rgba(20,32,26,0.1);margin:32px 0 40px"></div>
+
+    <div style="position:relative;width:1140px;height:1120px">
+      <div style="position:absolute;left:0;top:52px;width:340px;height:738px;border-radius:28px;background:rgba(58,82,69,0.05)"></div>
+      <div style="position:absolute;left:400px;top:52px;width:340px;height:738px;border-radius:28px;background:rgba(58,82,69,0.08)"></div>
+      <div style="position:absolute;left:800px;top:52px;width:340px;height:738px;border-radius:28px;background:rgba(20,32,26,0.05)"></div>
+
+      <div style="position:absolute;left:14px;top:4px;width:312px;display:flex;align-items:baseline;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:#3A5245">DEVICE</span><span style="font-size:13px;font-weight:500;color:rgba(20,32,26,0.5)">Expo app</span></div>
+      <div style="position:absolute;left:414px;top:4px;width:312px;display:flex;align-items:baseline;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:#3A5245">API</span><span style="font-size:13px;font-weight:500;color:rgba(20,32,26,0.5)">Node · Express</span></div>
+      <div style="position:absolute;left:814px;top:4px;width:312px;display:flex;align-items:baseline;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:rgba(20,32,26,0.5)">PROVIDER</span><span style="font-size:13px;font-weight:500;color:rgba(20,32,26,0.42)">MSG91 · external</span></div>
+
+      <div style="position:absolute;left:14px;top:76px;width:312px;height:80px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:13px 16px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">1</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Number entry</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">+91 fixed · 10-digit validate on device<br>POST /auth/otp</span>
+      </div>
+
+      <div style="position:absolute;left:414px;top:178px;width:312px;height:80px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:13px 16px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">2</span><span style="font-size:13.5px;font-weight:600;color:#14201A">OTP minted, then hashed</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">crypto.randomInt(6) · bcrypt(otp, 10)<br>otp_codes: hash, expires_at = now + 10 min</span>
+      </div>
+
+      <div style="position:absolute;left:814px;top:280px;width:312px;height:80px;border-radius:20px;background:#14201A;padding:13px 16px;display:flex;flex-direction:column;gap:6px;box-shadow:0 18px 40px -26px rgba(20,32,26,0.7)">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#E2A73E;color:#14201A;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">3</span><span style="font-size:13.5px;font-weight:600;color:#F9F8F4">SMS dispatch</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(249,248,244,0.5)">DLT-approved template, sender SNESTx<br>plaintext code exists here and nowhere else</span>
+      </div>
+
+      <div style="position:absolute;left:14px;top:382px;width:312px;height:80px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:13px 16px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">4</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Code entry</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">6 boxes, SMS autofill where the OS allows<br>resend gated to 1 per 30 s</span>
+      </div>
+
+      <div style="position:absolute;left:414px;top:484px;width:312px;height:80px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:13px 16px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">5</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Verification</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">bcrypt.compare · row consumed on success<br>max 5 attempts, then the code is burned</span>
+      </div>
+
+      <div style="position:absolute;left:414px;top:586px;width:312px;height:80px;border-radius:20px;background:#FFFFFF;border:1.5px solid rgba(58,82,69,0.45);box-shadow:0 16px 38px -24px rgba(58,82,69,0.6);padding:13px 16px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">6</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Token pair issued</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.55)">access JWT · 15 min · RS256, role claim<br>refresh · 30 d · jti + device id persisted</span>
+      </div>
+
+      <div style="position:absolute;left:14px;top:688px;width:312px;height:80px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:13px 16px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">7</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Secure device storage</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">expo-secure-store → iOS Keychain / Android<br>Keystore. Never AsyncStorage, never redux.</span>
+      </div>
+
+      <svg width="1140" height="1120" viewBox="0 0 1140 1120" style="position:absolute;inset:0;pointer-events:none">
+        <defs>
+          <marker id="snAuA" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0 0.9L7.4 4.5L0 8.1Z" fill="#3A5245"></path></marker>
+        </defs>
+        <path d="M170 156 V162 Q170 167 175 167 H565 Q570 167 570 172 V174" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snAuA)"></path>
+        <path d="M570 258 V264 Q570 269 575 269 H965 Q970 269 970 274 V276" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snAuA)"></path>
+        <path d="M970 360 V366 Q970 371 965 371 H175 Q170 371 170 376 V378" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snAuA)"></path>
+        <path d="M170 462 V468 Q170 473 175 473 H565 Q570 473 570 478 V480" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snAuA)"></path>
+        <path d="M570 564 V582" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snAuA)"></path>
+        <path d="M570 666 V672 Q570 677 565 677 H175 Q170 677 170 682 V684" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snAuA)"></path>
+      </svg>
+
+      <div style="position:absolute;left:0;top:850px;width:1140px;height:266px;border-radius:28px;background:#14201A;padding:26px 30px;display:flex;flex-direction:column;box-shadow:0 30px 66px -34px rgba(20,32,26,0.8)">
+        <div style="display:flex;align-items:baseline;gap:14px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:#E2A73E">TOKEN ROTATION</span>
+          <div style="flex:1;height:1px;background:rgba(249,248,244,0.14)"></div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(249,248,244,0.45)">the step reviewers ask about</span>
+        </div>
+        <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:#F9F8F4;margin-top:12px;letter-spacing:-0.01em">Every refresh burns the token that made it</div>
+        <div style="display:flex;align-items:stretch;gap:0;margin-top:18px">
+          <div style="flex:1;border-radius:18px;background:rgba(249,248,244,0.07);border:1px solid rgba(249,248,244,0.15);padding:12px 14px;display:flex;flex-direction:column;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#E2A73E">POST /auth/refresh</span><span style="font-size:11.5px;color:rgba(249,248,244,0.55);line-height:1.45">Client sends the refresh token only — never the expired access token.</span></div>
+          <div style="flex:0 0 30px;display:flex;align-items:center;justify-content:center"><svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="rgba(226,167,62,0.7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h12M9.5 1.5 13 5l-3.5 3.5"></path></svg></div>
+          <div style="flex:1;border-radius:18px;background:rgba(249,248,244,0.07);border:1px solid rgba(249,248,244,0.15);padding:12px 14px;display:flex;flex-direction:column;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#E2A73E">validate</span><span style="font-size:11.5px;color:rgba(249,248,244,0.55);line-height:1.45">Signature, expiry, device match, and jti still present in the live set.</span></div>
+          <div style="flex:0 0 30px;display:flex;align-items:center;justify-content:center"><svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="rgba(226,167,62,0.7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h12M9.5 1.5 13 5l-3.5 3.5"></path></svg></div>
+          <div style="flex:1;border-radius:18px;background:rgba(226,167,62,0.16);border:1px solid rgba(226,167,62,0.5);padding:12px 14px;display:flex;flex-direction:column;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#E2A73E">issue new pair</span><span style="font-size:11.5px;color:rgba(249,248,244,0.7);line-height:1.45">A fresh access token <em>and</em> a brand-new refresh token go back together.</span></div>
+          <div style="flex:0 0 30px;display:flex;align-items:center;justify-content:center"><svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="rgba(226,167,62,0.7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h12M9.5 1.5 13 5l-3.5 3.5"></path></svg></div>
+          <div style="flex:1;border-radius:18px;background:rgba(168,82,50,0.18);border:1px solid rgba(168,82,50,0.5);padding:12px 14px;display:flex;flex-direction:column;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#E08B60">revoke old jti</span><span style="font-size:11.5px;color:rgba(249,248,244,0.7);line-height:1.45">Replay of a spent token revokes the whole family — every device signs out.</span></div>
+        </div>
+        <div style="position:relative;height:46px;margin-top:6px">
+          <svg width="1080" height="46" viewBox="0 0 1080 46" style="position:absolute;inset:0;pointer-events:none">
+            <defs><marker id="snRotA" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0 0.9L7.4 4.5L0 8.1Z" fill="#E2A73E"></path></marker></defs>
+            <path d="M985 2 V22 Q985 28 979 28 H107 Q101 28 101 22 V6" stroke="#E2A73E" stroke-width="1.5" stroke-dasharray="6 5" fill="none" marker-end="url(#snRotA)"></path>
+          </svg>
+          <div style="position:absolute;left:0;top:20px;width:1080px;text-align:center"><span style="background:#14201A;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.1em;color:#E2A73E">↺ ON EVERY 401, AND ON APP RESUME</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showAutopay }}" hint-placeholder-val="{{ true }}">
+  <div style="background:#F9F8F4;border-radius:28px;padding:46px 52px 52px;box-shadow:0 34px 76px -46px rgba(20,32,26,0.45);margin-bottom:44px;width:1244px">
+    <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:16px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.2em;color:#3A5245">03</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:rgba(20,32,26,0.42)">Rent autopay flow</span>
+    </div>
+    <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:600;color:#14201A;letter-spacing:-0.015em;line-height:1.15">Eleven debits, and a plan for the one that fails</div>
+    <div style="font-size:14.5px;color:rgba(20,32,26,0.55);line-height:1.6;margin-top:12px;max-width:740px;text-wrap:pretty">A standard Delhi lease is eleven months, so the mandate is written for eleven debits, not "until cancelled". The pre-debit notice at T-24h is not a nicety — it is required, and it is also the moment a tenant tops up their account.</div>
+    <div style="height:1px;background:rgba(20,32,26,0.1);margin:32px 0 40px"></div>
+
+    <div style="position:relative;width:1140px;height:800px">
+      <div style="position:absolute;left:400px;top:0;width:340px;height:76px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:12px 16px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">1</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Lease signed</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">11-month term · rent ₹32,000 · deposit ₹64,000</span>
+      </div>
+      <div style="position:absolute;left:400px;top:108px;width:340px;height:76px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:12px 16px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">2</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Mandate created</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">Razorpay eMandate / UPI Autopay · cap ₹35,000</span>
+      </div>
+      <div style="position:absolute;left:400px;top:216px;width:340px;height:76px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:12px 16px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">3</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Schedule written</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">11 rows in payments, one per 5th of the month</span>
+      </div>
+      <div style="position:absolute;left:400px;top:324px;width:340px;height:76px;border-radius:20px;background:rgba(226,167,62,0.14);border:1.5px solid rgba(226,167,62,0.55);padding:12px 16px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#E2A73E;color:#14201A;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">4</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Pre-debit notice · T-24h</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.6)">push + SMS, amount and date stated, mandatory</span>
+      </div>
+      <div style="position:absolute;left:400px;top:432px;width:340px;height:76px;border-radius:20px;background:#3A5245;padding:12px 16px;display:flex;flex-direction:column;gap:5px;box-shadow:0 18px 40px -22px rgba(58,82,69,0.9)">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#F9F8F4;color:#3A5245;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">5</span><span style="font-size:13.5px;font-weight:600;color:#F9F8F4">Debit executed</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(249,248,244,0.6)">webhook: payment.captured | payment.failed</span>
+      </div>
+
+      <div style="position:absolute;left:40px;top:540px;width:460px;height:68px;border-radius:20px;background:rgba(58,82,69,0.09);border:1px solid rgba(58,82,69,0.3);padding:12px 18px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:0.16em;color:#3A5245">SUCCESS</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Captured</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.55)">₹32,000 · UPI · 05 Aug 2026, 09:14 IST</span>
+      </div>
+      <div style="position:absolute;left:40px;top:628px;width:460px;height:68px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:12px 18px;display:flex;flex-direction:column;gap:5px">
+        <span style="font-size:13.5px;font-weight:600;color:#14201A">Receipt + ledger entry</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.5)">PDF stored, landlord payout row queued</span>
+      </div>
+      <div style="position:absolute;left:40px;top:716px;width:460px;height:68px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:12px 18px;display:flex;flex-direction:column;gap:5px">
+        <span style="font-size:13.5px;font-weight:600;color:#14201A">Both parties notified</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.5)">tenant: paid · landlord: received · 8 of 11 done</span>
+      </div>
+
+      <div style="position:absolute;left:640px;top:540px;width:460px;height:68px;border-radius:20px;background:rgba(168,82,50,0.09);border:1px solid rgba(168,82,50,0.34);padding:12px 18px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:0.16em;color:#A85232">FAILURE</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Declined</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.55)">insufficient funds · mandate paused · bank down</span>
+      </div>
+      <div style="position:absolute;left:640px;top:628px;width:460px;height:68px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(168,82,50,0.22);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:12px 18px;display:flex;flex-direction:column;gap:5px">
+        <span style="font-size:13.5px;font-weight:600;color:#14201A">Retry ladder</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.5)">T+1 · T+3 · T+5, then stop — never silent retries</span>
+      </div>
+      <div style="position:absolute;left:640px;top:716px;width:460px;height:68px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:12px 18px;display:flex;flex-direction:column;gap:5px">
+        <span style="font-size:13.5px;font-weight:600;color:#14201A">Escalate, don't hide</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.5)">tenant gets a one-tap UPI link · landlord is told</span>
+      </div>
+
+      <svg width="1140" height="800" viewBox="0 0 1140 800" style="position:absolute;inset:0;pointer-events:none">
+        <defs>
+          <marker id="snPayA" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0 0.9L7.4 4.5L0 8.1Z" fill="#3A5245"></path></marker>
+          <marker id="snPayR" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0 0.9L7.4 4.5L0 8.1Z" fill="#A85232"></path></marker>
+        </defs>
+        <path d="M570 76 V102" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snPayA)"></path>
+        <path d="M570 184 V210" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snPayA)"></path>
+        <path d="M570 292 V318" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snPayA)"></path>
+        <path d="M570 400 V426" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snPayA)"></path>
+        <path d="M570 508 V520 Q570 526 564 526 H276 Q270 526 270 532 V534" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snPayA)"></path>
+        <path d="M570 508 V520 Q570 526 576 526 H864 Q870 526 870 532 V534" stroke="#A85232" stroke-width="1.6" fill="none" marker-end="url(#snPayR)"></path>
+        <path d="M270 608 V622" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snPayA)"></path>
+        <path d="M270 696 V710" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snPayA)"></path>
+        <path d="M870 608 V622" stroke="#A85232" stroke-width="1.6" fill="none" marker-end="url(#snPayR)"></path>
+        <path d="M870 696 V710" stroke="#A85232" stroke-width="1.6" fill="none" marker-end="url(#snPayR)"></path>
+        <path d="M1100 662 H1116 Q1124 662 1124 654 V478 Q1124 470 1116 470 H748" stroke="#A85232" stroke-width="1.5" stroke-dasharray="6 5" fill="none" marker-end="url(#snPayR)"></path>
+      </svg>
+      <div style="position:absolute;left:960px;top:444px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:0.08em;color:#A85232;background:#F9F8F4;padding:0 8px">retry re-enters the debit step</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showSecurity }}" hint-placeholder-val="{{ true }}">
+  <div style="background:#F9F8F4;border-radius:28px;padding:46px 52px 52px;box-shadow:0 34px 76px -46px rgba(20,32,26,0.45);margin-bottom:44px;width:1244px">
+    <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:16px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.2em;color:#3A5245">04</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:rgba(20,32,26,0.42)">Security layers</span>
+    </div>
+    <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:600;color:#14201A;letter-spacing:-0.015em;line-height:1.15">Seven layers, read from the outside in</div>
+    <div style="font-size:14.5px;color:rgba(20,32,26,0.55);line-height:1.6;margin-top:12px;max-width:740px;text-wrap:pretty">Each layer holds on its own. Getting past one does not open the next — an attacker with a valid token still meets authorization, and one who gets past authorization still meets a query scoped to a single owner's rows.</div>
+    <div style="height:1px;background:rgba(20,32,26,0.1);margin:32px 0 40px"></div>
+
+    <div style="position:relative;width:1140px;height:610px">
+      <div style="position:absolute;left:0;top:0;width:1140px;height:610px;border-radius:28px;background:rgba(20,32,26,0.05);border:1.5px solid rgba(20,32,26,0.18);padding:16px 22px">
+        <div style="display:flex;align-items:baseline;gap:14px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:rgba(20,32,26,0.45)">L7</span><span style="font-size:14px;font-weight:600;color:#14201A">Detection &amp; monitoring</span><div style="flex:1;height:1px;background:rgba(20,32,26,0.12)"></div><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.45)">structured audit log · failed-login spikes · webhook signature failures page me</span></div>
+      </div>
+      <div style="position:absolute;left:42px;top:62px;width:1056px;height:528px;border-radius:28px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.1);padding:16px 22px">
+        <div style="display:flex;align-items:baseline;gap:14px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:rgba(20,32,26,0.45)">L6</span><span style="font-size:14px;font-weight:600;color:#14201A">Rate limiting</span><div style="flex:1;height:1px;background:rgba(20,32,26,0.1)"></div><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.45)">5 OTP/hr/number · 100 req/min/IP · 3 SOS/hr/user</span></div>
+      </div>
+      <div style="position:absolute;left:84px;top:124px;width:972px;height:446px;border-radius:28px;background:rgba(58,82,69,0.06);border:1px solid rgba(58,82,69,0.22);padding:16px 22px">
+        <div style="display:flex;align-items:baseline;gap:14px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:#3A5245">L5</span><span style="font-size:14px;font-weight:600;color:#14201A">Transport</span><div style="flex:1;height:1px;background:rgba(58,82,69,0.18)"></div><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.45)">TLS 1.3 only · HSTS · no plaintext fallback</span></div>
+      </div>
+      <div style="position:absolute;left:126px;top:186px;width:888px;height:364px;border-radius:28px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.1);padding:16px 22px">
+        <div style="display:flex;align-items:baseline;gap:14px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:rgba(20,32,26,0.45)">L4</span><span style="font-size:14px;font-weight:600;color:#14201A">Identity</span><div style="flex:1;height:1px;background:rgba(20,32,26,0.1)"></div><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.45)">phone + OTP · 15-min access · rotating refresh</span></div>
+      </div>
+      <div style="position:absolute;left:168px;top:248px;width:804px;height:282px;border-radius:28px;background:rgba(58,82,69,0.08);border:1px solid rgba(58,82,69,0.28);padding:16px 22px">
+        <div style="display:flex;align-items:baseline;gap:14px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:#3A5245">L3</span><span style="font-size:14px;font-weight:600;color:#14201A">Authorization</span><div style="flex:1;height:1px;background:rgba(58,82,69,0.2)"></div><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.45)">role gate + row-level ownership on every query</span></div>
+      </div>
+      <div style="position:absolute;left:210px;top:310px;width:720px;height:200px;border-radius:28px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.1);padding:16px 22px">
+        <div style="display:flex;align-items:baseline;gap:14px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:rgba(20,32,26,0.45)">L2</span><span style="font-size:14px;font-weight:600;color:#14201A">Input validation</span><div style="flex:1;height:1px;background:rgba(20,32,26,0.1)"></div><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,32,26,0.45)">zod at the route edge · parameterised SQL</span></div>
+      </div>
+      <div style="position:absolute;left:252px;top:372px;width:636px;height:118px;border-radius:28px;background:rgba(226,167,62,0.16);border:1.5px solid rgba(226,167,62,0.6);padding:16px 22px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:baseline;gap:14px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.2em;color:#14201A">L1</span><span style="font-size:14px;font-weight:600;color:#14201A">Sensitive data handling</span></div>
+        <div style="font-size:12.5px;color:rgba(20,32,26,0.65);line-height:1.55">OTPs and passwords hashed with bcrypt, never stored raw. KYC documents encrypted at rest. SOS media deleted from the device once the server acknowledges it. Location kept for 90 days and only for the purpose it was collected — DPDP Act, purpose limitation.</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showSos }}" hint-placeholder-val="{{ true }}">
+  <div style="background:#F9F8F4;border-radius:28px;padding:46px 52px 52px;box-shadow:0 34px 76px -46px rgba(20,32,26,0.45);margin-bottom:20px;width:1244px">
+    <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:16px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.2em;color:#A85232">05</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:rgba(20,32,26,0.42)">Emergency SOS flow</span>
+    </div>
+    <div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:600;color:#14201A;letter-spacing:-0.015em;line-height:1.15">It has to work on one bar of signal</div>
+    <div style="font-size:14.5px;color:rgba(20,32,26,0.55);line-height:1.6;margin-top:12px;max-width:740px;text-wrap:pretty">The whole point of this feature is the moment it is used, and that moment is rarely well-connected. So the trigger is deliberate, the payload is small, dispatch fans out across three channels, and if there is no data connection at all the app hands the OS a pre-filled SMS instead of failing quietly.</div>
+    <div style="height:1px;background:rgba(20,32,26,0.1);margin:32px 0 40px"></div>
+
+    <div style="position:relative;width:1140px;height:820px">
+      <div style="position:absolute;left:400px;top:0;width:340px;height:76px;border-radius:20px;background:rgba(168,82,50,0.1);border:1.5px solid rgba(168,82,50,0.45);padding:12px 16px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#A85232;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">1</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Trigger</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.55)">long-press 3 s + haptic — no accidental fires</span>
+      </div>
+      <div style="position:absolute;left:400px;top:104px;width:340px;height:76px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:12px 16px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">2</span><span style="font-size:13.5px;font-weight:600;color:#14201A">GPS acquisition</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">high accuracy, 8 s cap, last-known as fallback</span>
+      </div>
+      <div style="position:absolute;left:400px;top:208px;width:340px;height:76px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:12px 16px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">3</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Dual camera capture</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">front + rear, 1 frame each, silent, cache only</span>
+      </div>
+      <div style="position:absolute;left:400px;top:312px;width:340px;height:76px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:12px 16px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">4</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Payload compiled</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">28.5245 N, 77.2066 E · address · time · battery</span>
+      </div>
+      <div style="position:absolute;left:400px;top:416px;width:340px;height:76px;border-radius:20px;background:#A85232;padding:12px 16px;display:flex;flex-direction:column;gap:5px;box-shadow:0 18px 40px -22px rgba(168,82,50,0.9)">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#F9F8F4;color:#A85232;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">5</span><span style="font-size:13.5px;font-weight:600;color:#F9F8F4">Multi-channel dispatch</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(249,248,244,0.7)">all three fire at once — first one through wins</span>
+      </div>
+
+      <div style="position:absolute;left:40px;top:372px;width:300px;height:100px;border-radius:20px;background:#F2EFE7;border:1.5px dashed rgba(168,82,50,0.5);padding:12px 16px;display:flex;flex-direction:column;gap:6px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:0.16em;color:#A85232">OFFLINE FALLBACK</span>
+        <span style="font-size:13px;font-weight:600;color:#14201A">Native SMS intent</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.55)">no data → hand the OS composer a pre-filled message with coords. Carrier network only.</span>
+      </div>
+
+      <div style="position:absolute;left:40px;top:512px;width:340px;height:84px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:13px 16px;display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:13.5px;font-weight:600;color:#14201A">SMS · trusted contacts</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">MSG91 · up to 5 numbers<br>map link, no app install needed</span>
+      </div>
+      <div style="position:absolute;left:400px;top:512px;width:340px;height:84px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:13px 16px;display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:13.5px;font-weight:600;color:#14201A">Email · with attachments</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">both frames + full coordinate record<br>for anyone who needs to act on it later</span>
+      </div>
+      <div style="position:absolute;left:760px;top:512px;width:340px;height:84px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(20,32,26,0.09);box-shadow:0 12px 30px -24px rgba(20,32,26,0.5);padding:13px 16px;display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:13.5px;font-weight:600;color:#14201A">Push · verified users nearby</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.5)">ST_DWithin ≤ 1 km, KYC-verified only<br>opt-in, and rate-capped per user</span>
+      </div>
+
+      <div style="position:absolute;left:400px;top:632px;width:340px;height:76px;border-radius:20px;background:rgba(58,82,69,0.1);border:1.5px solid rgba(58,82,69,0.4);padding:12px 16px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#3A5245;color:#F9F8F4;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">6</span><span style="font-size:13.5px;font-weight:600;color:#14201A">Confirmation to the user</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(20,32,26,0.55)">3 of 3 delivered · shown on screen, not assumed</span>
+      </div>
+      <div style="position:absolute;left:400px;top:736px;width:340px;height:76px;border-radius:20px;background:#14201A;padding:12px 16px;display:flex;flex-direction:column;gap:5px;box-shadow:0 20px 44px -26px rgba(20,32,26,0.75)">
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:19px;height:19px;border-radius:9999px;background:#E2A73E;color:#14201A;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto">7</span><span style="font-size:13.5px;font-weight:600;color:#F9F8F4">Local media wipe</span></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:rgba(249,248,244,0.55)">frames deleted from cache once the server acks</span>
+      </div>
+
+      <svg width="1140" height="820" viewBox="0 0 1140 820" style="position:absolute;inset:0;pointer-events:none">
+        <defs>
+          <marker id="snSosA" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0 0.9L7.4 4.5L0 8.1Z" fill="#3A5245"></path></marker>
+          <marker id="snSosR" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0 0.9L7.4 4.5L0 8.1Z" fill="#A85232"></path></marker>
+        </defs>
+        <path d="M570 76 V98" stroke="#A85232" stroke-width="1.6" fill="none" marker-end="url(#snSosR)"></path>
+        <path d="M570 180 V202" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snSosA)"></path>
+        <path d="M570 284 V306" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snSosA)"></path>
+        <path d="M570 388 V410" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snSosA)"></path>
+        <path d="M570 492 V497 Q570 502 565 502 H215 Q210 502 210 507 V506" stroke="#A85232" stroke-width="1.6" fill="none" marker-end="url(#snSosR)"></path>
+        <path d="M570 492 V506" stroke="#A85232" stroke-width="1.6" fill="none" marker-end="url(#snSosR)"></path>
+        <path d="M570 492 V497 Q570 502 575 502 H925 Q930 502 930 507 V506" stroke="#A85232" stroke-width="1.6" fill="none" marker-end="url(#snSosR)"></path>
+        <path d="M210 596 V609 Q210 614 215 614 H565 Q570 614 570 619 V626" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snSosA)"></path>
+        <path d="M570 596 V626" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snSosA)"></path>
+        <path d="M930 596 V609 Q930 614 925 614 H575 Q570 614 570 619 V626" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snSosA)"></path>
+        <path d="M570 708 V730" stroke="#3A5245" stroke-width="1.6" fill="none" marker-end="url(#snSosA)"></path>
+        <path d="M398 440 H348" stroke="#A85232" stroke-width="1.6" stroke-dasharray="6 5" fill="none" marker-end="url(#snSosR)"></path>
+      </svg>
+      <div style="position:absolute;left:346px;top:414px;width:52px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#A85232">no data</div>
+    </div>
+
+    <div style="margin-top:40px;border-radius:28px;background:rgba(58,82,69,0.07);border:1px solid rgba(58,82,69,0.22);padding:22px 26px;display:flex;gap:30px;width:1140px">
+      <div style="flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.18em;color:#3A5245;padding-top:2px">DPDP NOTE</div>
+      <div style="font-size:13.5px;color:rgba(20,32,26,0.68);line-height:1.6;text-wrap:pretty">SOS collects the most sensitive data in the product — precise location and camera frames. Consent is taken at the moment the feature is set up, not buried at signup; the frames are deleted from the device after acknowledgement; and the event record is retained only as long as the safety purpose lasts. Write that into the privacy policy before this ships, not after.</div>
+    </div>
+  </div>
+  </sc-if>
+
+</div>
+</div></x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;diagram&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;all&quot;,&quot;options&quot;:[&quot;all&quot;,&quot;system&quot;,&quot;auth&quot;,&quot;autopay&quot;,&quot;security&quot;,&quot;sos&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Presenting&quot;},&quot;blueprintGrid&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Presenting&quot;}}">
+class Component extends DCLogic {
+  renderVals(){
+    const d = this.props.diagram || 'all';
+    const all = d === 'all';
+    return {
+      blueprintGrid: this.props.blueprintGrid ?? false,
+      showSystem: all || d === 'system',
+      showAuth: all || d === 'auth',
+      showAutopay: all || d === 'autopay',
+      showSecurity: all || d === 'security',
+      showSos: all || d === 'sos'
+    };
+  }
+}
+</script>
+</body>
+</html>

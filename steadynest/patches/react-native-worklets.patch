@@ -1,0 +1,12 @@
+diff --git a/android/build.gradle b/android/build.gradle
+index 021f5bc26aed96940148e8cc809955e29372d326..70064c4e1b1b6b0480732f0c3e5053ea7a29a414 100644
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -196,6 +196,7 @@ android {
+                         "-DWORKLETS_BUNDLE_MODE=${BUNDLE_MODE}",
+                         "-DWORKLETS_VERSION=${WORKLETS_VERSION}",
+                         "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON",
++                        "-DCMAKE_OBJECT_PATH_MAX=32000",
+                         "-DWORKLETS_FEATURE_FLAGS=${WORKLETS_FEATURE_FLAGS}"
+                 abiFilters (*reactNativeArchitectures())
+                 targets("worklets")

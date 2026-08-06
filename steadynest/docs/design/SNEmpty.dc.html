@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+</helmet>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 26px 46px;font-family:'Inter',sans-serif">
+  <div style="width:82px;height:82px;border-radius:9999px;background:rgba(58,82,69,0.07);display:flex;align-items:center;justify-content:center;margin-bottom:24px">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#3A5245" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ iconPath }}"/></svg>
+  </div>
+  <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:#14201A;margin-bottom:11px;letter-spacing:-0.01em;line-height:1.2">{{ title }}</div>
+  <div style="font-size:14px;color:rgba(20,32,26,0.55);line-height:1.55;max-width:262px;margin-bottom:28px;text-wrap:pretty">{{ body }}</div>
+  <sc-if value="{{ hasCta }}" hint-placeholder-val="{{ true }}">
+    <button style="width:100%;border:none;border-radius:9999px;padding:16px 0;background:#3A5245;color:#F9F8F4;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:12px;box-shadow:0 12px 28px -12px rgba(58,82,69,0.7)">{{ cta }}</button>
+  </sc-if>
+  <sc-if value="{{ hasCta2 }}" hint-placeholder-val="{{ false }}">
+    <button style="width:100%;border:1.5px solid rgba(20,32,26,0.14);border-radius:9999px;padding:15px 0;background:transparent;color:#14201A;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer">{{ cta2 }}</button>
+  </sc-if>
+  <sc-if value="{{ hasMeta }}" hint-placeholder-val="{{ false }}">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(20,32,26,0.4);margin-top:20px;letter-spacing:0.02em">{{ meta }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:620},&quot;title&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Nothing here yet&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;body&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;cta&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;cta2&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;meta&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;iconPath&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;M3 3v18h18M7 16l4-6 3 4 4-7&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals(){
+    const p = this.props;
+    return {
+      iconPath: p.iconPath || 'M3 3v18h18M7 16l4-6 3 4 4-7',
+      title: p.title || 'Nothing here yet',
+      body: p.body || '',
+      cta: p.cta || '',
+      cta2: p.cta2 || '',
+      meta: p.meta || '',
+      hasCta: !!p.cta,
+      hasCta2: !!p.cta2,
+      hasMeta: !!p.meta
+    };
+  }
+}
+</script>
+</body>
+</html>

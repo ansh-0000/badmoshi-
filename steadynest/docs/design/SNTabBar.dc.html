@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="flex:0 0 auto;height:92px;background:rgba(249,248,244,0.94);backdrop-filter:blur(14px);border-top:1px solid rgba(20,32,26,0.07);display:flex;padding:14px 10px 0">
+  <div style="{{ wrap0 }}">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ sw0 }}" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+    <span style="{{ lbl0 }}">Stays</span>
+  </div>
+  <div style="{{ wrap1 }}">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ sw1 }}" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V21"/><circle cx="9.5" cy="7" r="4"/><path d="M21 21v-1.5a4 4 0 0 0-3-3.85"/><path d="M15.5 3.15a4 4 0 0 1 0 7.7"/></svg>
+    <span style="{{ lbl1 }}">Connect</span>
+  </div>
+  <!-- Tira AI occupies the centre slot, ahead of Chat. Centre is the most
+       prominent position and Tira is the product differentiator; the shipped
+       app has always ordered it this way. This file previously had Chat third
+       and Tira fourth, which made the design and the app disagree. -->
+  <div style="{{ wrap2 }}">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ sw2 }}" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.6 4.8L18.5 9l-4.9 1.2L12 15l-1.6-4.8L5.5 9l4.9-1.2L12 3Z"/><path d="M18.5 15.5l.5 1.7 1.7.5-1.7.5-.5 1.7-.5-1.7-1.7-.5 1.7-.5.5-1.7Z"/></svg>
+    <span style="{{ lbl2 }}">Tira AI</span>
+  </div>
+  <div style="{{ wrap3 }}">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ sw3 }}" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8 8 0 0 1-11.5 7.2L3 21l2.3-6.4A8 8 0 1 1 21 11.5Z"/></svg>
+    <span style="{{ lbl3 }}">Chat</span>
+  </div>
+  <div style="{{ wrap4 }}">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ sw4 }}" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4.2"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg>
+    <span style="{{ lbl4 }}">Profile</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:402,&quot;height&quot;:92},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;stays&quot;,&quot;options&quot;:[&quot;stays&quot;,&quot;connect&quot;,&quot;tira&quot;,&quot;chat&quot;,&quot;profile&quot;],&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals(){
+    const a=this.props.active||'stays';
+    const base='flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;';
+    const keys=['stays','connect','tira','chat','profile'];
+    const out={};
+    keys.forEach((k,i)=>{
+      const act=a===k;
+      out['wrap'+i]=base+(act?'color:#3A5245':'color:rgba(20,32,26,0.4)');
+      out['lbl'+i]='font-size:10px;letter-spacing:0.04em;font-weight:'+(act?600:500);
+      out['sw'+i]=act?1.9:1.75;
+    });
+    return out;
+  }
+}
+</script>
+</body>
+</html>

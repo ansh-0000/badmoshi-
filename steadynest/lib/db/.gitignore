@@ -1,0 +1,4 @@
+# Load-test / scratch seeds. Synthetic performance data only — never real
+# users, never committed. See src/seed-loadtest.local.ts.
+*.local.ts
+src/*.local.ts
